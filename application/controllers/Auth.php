@@ -23,9 +23,18 @@ class Auth extends CI_Controller
 
 		if ($validateEmailUsers != null) {
 			if (password_verify($password, $validateEmailUsers['password'])) {
-				echo 'berhasil login';
+				$response = [
+					'status' => 200,
+					'user_id' => $validateEmailUsers['id_user'],
+					'role' => $validateEmailUsers['roles']
+				];
+				echo json_encode($response);
 			} else {
-				echo 'password salah';
+				$response = [
+					'status' => 404,
+					'message' => 'Password salah'
+				];
+				echo json_encode($response);
 			}
 		} else {
 			$response = [
