@@ -18,6 +18,26 @@ class User_model extends CI_Model
 		$this->db->where('email', $email);
 		return $this->db->get()->row_array();
 	}
+
+	function getUserById($id)
+	{
+		$this->db->select('*');
+		$this->db->from('users');
+		$this->db->where('id_user', $id);
+		return $this->db->get()->row_array();
+	}
+
+	function insert($data)
+	{
+		$insert = $this->db->insert('users', $data);
+
+
+		if ($insert) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }
 
 /* End of file User_model.php */
