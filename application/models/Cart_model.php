@@ -69,6 +69,26 @@ class Cart_model extends CI_Model
 			return false;
 		}
 	}
+
+	function getBeratPesanan($id)
+	{
+
+		$this->db->select_sum('banyak');
+		$this->db->from('carts');
+		$this->db->where('carts.user_id', $id);
+		$berat = $this->db->get()->row_array();
+		return $berat['banyak'];
+	}
+
+	function getTotalPrice($id)
+	{
+
+		$this->db->select_sum('total');
+		$this->db->from('carts');
+		$this->db->where('carts.user_id', $id);
+		$total = $this->db->get()->row_array();
+		return $total['total'];
+	}
 }
 
 /* End of file Cart_model.php */

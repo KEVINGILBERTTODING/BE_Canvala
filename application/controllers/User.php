@@ -13,6 +13,7 @@ class User extends CI_Controller
 		$this->load->model('product_model');
 		$this->load->model('user_model');
 		$this->load->model('cart_model');
+		$this->load->model('rekening_model');
 	}
 
 	function getAllProduct()
@@ -104,6 +105,26 @@ class User extends CI_Controller
 			];
 			echo json_encode($response);
 		}
+	}
+
+	function getAllRekening()
+	{
+		echo json_encode($this->rekening_model->getAllRekening());
+	}
+
+	function getInformationOrder()
+	{
+		$userId = $this->input->post('user_id');
+		$totalBeratPesanan = $this->cart_model->getBeratPesanan($userId);
+		$qty = $this->cart_model->getBeratPesanan($userId);
+		$hargaTotal = $this->cart_model->getTotalPrice($userId);
+		$response = [
+			'berat' => $totalBeratPesanan,
+			'harga_total' => $hargaTotal,
+			'qty' => $qty
+		];
+
+		echo json_encode($response);
 	}
 }
 
