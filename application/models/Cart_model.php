@@ -39,12 +39,30 @@ class Cart_model extends CI_Model
 	{
 
 		$this->db->trans_start();
-		$insert = $this->db->insert('carts', $dataCart);
+		$this->db->insert('carts', $dataCart);
 
 		$this->db->where('id_product', $idProduct);
 		$this->db->update('products', $dataProduct);
 		$this->db->trans_complete();
 
+		if ($this->db->trans_status() == true) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	function deleteCart($idCart, $idProduct, $dataProduct)
+	{
+
+		$this->db->trans_start();
+		$this->db->where('id_cart', $idCart);
+		$this->db->delete('carts');
+
+		$this->db->where('id_product', $idProduct);
+		$this->db->update('products', $dataProduct);
+
+		$this->db->trans_complete();
 		if ($this->db->trans_status() == true) {
 			return true;
 		} else {

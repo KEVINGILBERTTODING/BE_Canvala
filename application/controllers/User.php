@@ -80,6 +80,31 @@ class User extends CI_Controller
 			}
 		}
 	}
+
+	function deleteCart()
+	{
+		$idCart = $this->input->post('id_cart');
+		$idProduct = $this->input->post('id_product');
+		$stock = $this->input->post('stock');
+		$cekStock = $this->product_model->getProductById($idProduct);
+		$finalStock = $cekStock['stock'] + $stock;
+		$dataProduct = [
+			'stock' => $finalStock
+		];
+
+		$trans = $this->cart_model->deleteCart($idCart, $idProduct, $dataProduct);
+		if ($trans == true) {
+			$response = [
+				'status' => 200
+			];
+			echo json_encode($response);
+		} else {
+			$response = [
+				'status' => 404
+			];
+			echo json_encode($response);
+		}
+	}
 }
 
 
