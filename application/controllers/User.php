@@ -126,6 +126,32 @@ class User extends CI_Controller
 
 		echo json_encode($response);
 	}
+
+	function updateAlamat()
+	{
+		$userId = $this->input->post('user_id');
+		$data = [
+			'address' => $this->input->post('address'),
+			'phone_number' => $this->input->post('phone_number'),
+			'postal_code' => $this->input->post('postal_code'),
+
+		];
+
+		$update = $this->user_model->update($userId, $data);
+		if ($update == true) {
+			$response = [
+				'status' => 200,
+				'message' => 'Berhasil memperbarui alamat'
+			];
+			echo json_encode($response);
+		} else {
+			$response = [
+				'status' => 404,
+				'message' => 'Terjadi kesalahan'
+			];
+			echo json_encode($response);
+		}
+	}
 }
 
 
