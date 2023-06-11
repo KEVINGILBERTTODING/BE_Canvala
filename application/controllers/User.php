@@ -40,6 +40,7 @@ class User extends CI_Controller
 		$userId = $this->input->post('user_id');
 		$hargaProduct = $cekStock['price'];
 		$total = $hargaProduct * $qty;
+		$stokProduct = $cekStock['stock'] - $qty;
 
 
 		// cek stock
@@ -58,8 +59,12 @@ class User extends CI_Controller
 
 			];
 
+			$dataProduct = [
+				'stock' => $stokProduct
+			];
+
 			// masukkan ke dalam cart
-			$insert = $this->cart_model->insert($data);
+			$insert = $this->cart_model->addToCart($data, $productId, $dataProduct);
 			if ($insert == true) {
 				$response = [
 					'status' => 200,

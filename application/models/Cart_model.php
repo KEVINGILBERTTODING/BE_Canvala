@@ -34,6 +34,23 @@ class Cart_model extends CI_Model
 			return false;
 		}
 	}
+
+	function addToCart($dataCart, $idProduct, $dataProduct)
+	{
+
+		$this->db->trans_start();
+		$insert = $this->db->insert('carts', $dataCart);
+
+		$this->db->where('id_product', $idProduct);
+		$this->db->update('products', $dataProduct);
+		$this->db->trans_complete();
+
+		if ($this->db->trans_status() == true) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }
 
 /* End of file Cart_model.php */
