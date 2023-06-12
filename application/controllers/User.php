@@ -214,6 +214,75 @@ class User extends CI_Controller
 			echo json_encode($response);
 		}
 	}
+	function getMyTransactions()
+	{
+		$id = $this->input->get('user_id');
+		echo json_encode($this->transaction_model->getTransactionsByUserId($id));
+	}
+
+	function uploadBuktiTransfer()
+	{
+
+		$config['upload_path']          = './uploads/';
+		$config['allowed_types']        = 'jpg|png|jpeg';
+		$config['max_size']             = 5000;
+
+
+		$this->load->library('upload', $config);
+		if (!$this->upload->do_upload('bukti')) {
+			$response = [
+				'code' => 404,
+				'message' => 'Format file tidak sesuai'
+			];
+			echo json_encode($response);
+		} else {
+
+			$data = array('upload_data' => $this->upload->data());
+
+
+			$file_name = $data['upload_data']['file_name'];
+			$source_path = './uploads/' . $data['upload_data']['file_name'];
+			$dir_path = $_SERVER['DOCUMENT_ROOT'] . '/ortosec/assets/images/';
+			if (!is_dir($dir_path)) {
+				mkdir($dir_path, 0777, true);
+			}
+
+			$destination_path = $dir_path . $file_name;
+
+			if (file_exists($source_path)) {
+				if (copy($source_path, $destination_path)) {
+				} else {
+					$response = [
+						'code' => 404,
+						'message' => 'Terjadi kesalahan'
+					];
+					echo json_encode($response);
+				}
+			}
+		}
+
+		$userId = $this->input->post('id_transactions');
+
+		$data = [
+			'photo_transaction' => $file_name
+		];
+
+
+
+		$update =  $this->transaction_model->update($userId, $data);
+		if ($update == true) {
+			$response = [
+				'status' => 200
+			];
+			echo json_encode($response);
+		} else {
+			$response = [
+				'status' => 404,
+				'message' => 'Terjadi kesalahan'
+			];
+			echo json_encode($response);
+		}
+	}
 }
 
 

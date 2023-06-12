@@ -34,4 +34,27 @@ class Transaction_model extends CI_Model
 			return false;
 		}
 	}
+
+	function getTransactionsByUserId($id)
+	{
+		$this->db->select('*');
+		$this->db->from('transactions');
+		$this->db->join('users', 'users.id_user = transactions.user_id', 'left');
+		$this->db->join('rekening_numbers', 'rekening_numbers. id_rekening = transactions.rekening_id', 'left');
+		$this->db->where('transactions.user_id', $id);
+		$this->db->order_by('id_transaction', 'desc');
+
+		return $this->db->get()->result();
+	}
+
+	function update($id, $data)
+	{
+		$this->db->where('id_transaction', $id);
+		$update = $this->db->update('transactions', $data);
+		if ($update) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }
