@@ -14,6 +14,8 @@ class User extends CI_Controller
 		$this->load->model('user_model');
 		$this->load->model('cart_model');
 		$this->load->model('rekening_model');
+		$this->load->model('transaction_detail_model');
+		$this->load->model('transaction_model');
 	}
 
 	function getAllProduct()
@@ -142,6 +144,66 @@ class User extends CI_Controller
 			$response = [
 				'status' => 200,
 				'message' => 'Berhasil memperbarui alamat'
+			];
+			echo json_encode($response);
+		} else {
+			$response = [
+				'status' => 404,
+				'message' => 'Terjadi kesalahan'
+			];
+			echo json_encode($response);
+		}
+	}
+
+	function checkOut()
+	{
+		$userId = $this->input->post('user_id');
+		$totalPrice = $this->input->post('total_price');
+		$city = $this->input->post('city');
+		$rekId = $this->input->post('rek_id');
+		$weightTotal = $this->input->post('weight_total');
+		$transId = $this->transaction_model->getMaxId();
+		// create randowm integer 7 digit
+		$rand = rand(1000000, 9999999);
+		$transactionCode = 'EZM-' . $rand;
+		$prdCode = 'PRD-' . $rand;
+
+
+		// insert transactions
+		$dataTransactions = [
+			'user_id' => $userId,
+			'total_price' => $totalPrice,
+			'city' => $city,
+			'rekening_id' => $rekId,
+			'transaction_status' => 'BELUM KONFIRMASI',
+			'weight_total' => $weightTotal,
+			'delivered' => 0,
+			'code' => $transactionCode,
+			'created_at' => date('Y-m-d H:i:s')
+		];
+
+
+		// data detail transactions
+		$product = $this->cart_model->getCartById($userId);
+		$dataDetailTransaction = array(); // Initialize an array to store data for each iteration
+		foreach ($product as $item) {
+			$data = [
+				'transaction_id' => $transId,
+				'product_id' => $item->product_id,
+				'price' => $item->total,
+				'banyak' => $item->banyak,
+				'code_product' => $prdCode,
+			];
+
+			$dataDetailTransaction[] = $data; // Add current iteration's data to the array
+		}
+
+		$insert = $this->transaction_model->checkOut($dataTransactions, $dataDetailTransaction, $userId); // Assuming insertBatch() is a valid method for inserting multiple rows
+
+		if ($insert == true) {
+			$response = [
+				'status' => 200,
+				'message' => 'Berhasil checkout'
 			];
 			echo json_encode($response);
 		} else {
