@@ -57,4 +57,25 @@ class Transaction_model extends CI_Model
 			return false;
 		}
 	}
+
+	function getTransactionsByStatus($status)
+	{
+
+		if ($status == 'all') {
+			$this->db->select('*');
+			$this->db->from('transactions');
+			$this->db->join('users', 'users.id_user = transactions.user_id', 'left');
+			$this->db->join('rekening_numbers', 'rekening_numbers. id_rekening = transactions.rekening_id', 'left');
+			$this->db->order_by('id_transaction', 'desc');
+			return $this->db->get()->result();
+		} else {
+			$this->db->select('*');
+			$this->db->from('transactions');
+			$this->db->join('users', 'users.id_user = transactions.user_id', 'left');
+			$this->db->join('rekening_numbers', 'rekening_numbers. id_rekening = transactions.rekening_id', 'left');
+			$this->db->where('transactions.transaction_status', $status);
+			$this->db->order_by('id_transaction', 'desc');
+			return $this->db->get()->result();
+		}
+	}
 }

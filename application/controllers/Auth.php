@@ -20,7 +20,6 @@ class Auth extends CI_Controller
 		$validateEmailUsers = $this->user_model->validateEmail($email);
 
 
-
 		if ($validateEmailUsers != null) {
 			if (password_verify($password, $validateEmailUsers['password'])) {
 				$response = [

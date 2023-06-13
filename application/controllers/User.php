@@ -283,6 +283,47 @@ class User extends CI_Controller
 			echo json_encode($response);
 		}
 	}
+
+	function getProductByKategori()
+	{
+		$id = $this->input->get('id');
+		echo json_encode($this->product_model->getAllProductsByKategori($id));
+	}
+
+	function updateProfile()
+	{
+
+		$password = $this->input->post('password');
+		$userId = $this->input->post('user_id');
+
+		if ($password == '') {
+			$data = [
+				'name' => $this->input->post('nama'),
+				'phone_number' => $this->input->post('telepon'),
+				'postal_code' => $this->input->post('kode_pos')
+			];
+		} else {
+			$data = [
+				'name' => $this->input->post('nama'),
+				'phone_number' => $this->input->post('telepon'),
+				'postal_code' => $this->input->post('kode_pos'),
+				'password' => password_hash($password, PASSWORD_DEFAULT)
+			];
+		}
+
+		$update = $this->user_model->update($userId, $data);
+		if ($update == true) {
+			$response = [
+				'status' => 200
+			];
+			echo json_encode($response);
+		} else {
+			$response = [
+				'status' => 404
+			];
+			echo json_encode($response);
+		}
+	}
 }
 
 
