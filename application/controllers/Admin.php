@@ -115,10 +115,8 @@ class Admin extends CI_Controller
 	function downloadLaporan($dateStart, $dateEnd)
 	{
 
-
-
 		$this->load->library('pdflib');
-		$this->pdflib->setFileName('Laporan_aspirasi.pdf');
+		$this->pdflib->setFileName('Laporan_transaksi.pdf');
 		$this->pdflib->setPaper('A4', 'potrait');
 		$data['transactions'] = $this->transaction_model->filterTrans($dateStart, $dateEnd);
 		$this->pdflib->loadView('v_report', $data);
