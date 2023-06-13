@@ -12,8 +12,14 @@ class Transaction_detail_model extends CI_Model
 		parent::__construct();
 	}
 
-	function insert($data)
+	function getDetail($id)
 	{
+		$this->db->select('*');
+		$this->db->from('transactions_details');
+		$this->db->join('products', 'products.id_product = transactions_details.product_id', 'left');
+		$this->db->join('products_galleries', 'products_galleries.product_id = transactions_details.product_id', 'left');
+		$this->db->where('transaction_id', $id);
+		return $this->db->get()->result();
 	}
 }
 

@@ -89,10 +89,6 @@ class Cart_model extends CI_Model
 		$total = $this->db->get()->row_array();
 		return $total['total'];
 	}
-
-	function insert2()
-	{
-	}
 }
 
 /* End of file Cart_model.php */

@@ -78,4 +78,20 @@ class Transaction_model extends CI_Model
 			return $this->db->get()->result();
 		}
 	}
+
+	function filterTrans($dateStart, $dateEnd)
+	{
+
+		$dateStartFormatted = date('Y-m-d', strtotime($dateStart));
+		$dateEndFormatted = date('Y-m-d', strtotime($dateEnd));
+
+		$this->db->select('*');
+		$this->db->from('transactions');
+		$this->db->join('users', 'users.id_user = transactions.user_id', 'left');
+		$this->db->join('rekening_numbers', 'rekening_numbers. id_rekening = transactions.rekening_id', 'left');
+		$this->db->where('DATE(transactions.created_at) >=', $dateStartFormatted);
+		$this->db->where('DATE(transactions.created_at) <=', $dateEndFormatted);
+		$this->db->order_by('id_transaction', 'desc');
+		return $this->db->get()->result();
+	}
 }

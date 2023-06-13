@@ -60,6 +60,69 @@ class Admin extends CI_Controller
 			echo json_encode($response);
 		}
 	}
+
+	function konfirmasiTransaction()
+	{
+		$transId = $this->input->post('trans_id');
+		$data = [
+			'transaction_status' => 'TERKONFIRMASI'
+		];
+
+		$update = $this->transaction_model->update($transId, $data);
+		if ($update == true) {
+			$response = [
+				'status' => 200
+			];
+			echo json_encode($response);
+		} else {
+			$response = [
+				'status' => 404
+			];
+			echo json_encode($response);
+		}
+	}
+
+	function terkirimTransaction()
+	{
+
+		$transId = $this->input->post('trans_id');
+		$data = [
+			'transaction_status' => 'TERKIRIM',
+			'receiver' => $this->input->post('penerima'),
+			'time_arrived' => date('Y-m-d H:i:s')
+		];
+
+		$update = $this->transaction_model->update($transId, $data);
+		if ($update == true) {
+			$response = [
+				'status' => 200
+			];
+			echo json_encode($response);
+		} else {
+			$response = [
+				'status' => 404
+			];
+			echo json_encode($response);
+		}
+	}
+
+	function getDetailTransactions()
+	{
+		$transId = $this->input->get('trans_id');
+		echo json_encode($this->transaction_detail_model->getDetail($transId));
+	}
+
+	function downloadLaporan($dateStart, $dateEnd)
+	{
+
+
+
+		$this->load->library('pdflib');
+		$this->pdflib->setFileName('Laporan_aspirasi.pdf');
+		$this->pdflib->setPaper('A4', 'potrait');
+		$data['transactions'] = $this->transaction_model->filterTrans($dateStart, $dateEnd);
+		$this->pdflib->loadView('v_report', $data);
+	}
 }
 
 
