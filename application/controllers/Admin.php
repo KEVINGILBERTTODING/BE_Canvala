@@ -264,6 +264,65 @@ class Admin extends CI_Controller
 			echo json_encode($response);
 		}
 	}
+
+	function deleteUsers()
+	{
+		$id = $this->input->post('id');
+		$delete = $this->user_model->delete($id);
+		if ($delete == true) {
+			$response = [
+				'status' => 200
+			];
+			echo json_encode($response);
+		} else {
+			$response = [
+				'status' => 404
+			];
+			echo json_encode($response);
+		}
+	}
+
+	function updateUsers()
+	{
+
+		$id = $this->input->post('id');
+		$password = $this->input->post('password');
+		if ($password == '') {
+			$data = [
+				'name' => $this->input->post('name'),
+				'email' => $this->input->post('email'),
+				'address' => $this->input->post('address'),
+				'phone_number' => $this->input->post('phone_number'),
+				'postal_code' => $this->input->post('postal_code'),
+				'roles' => $this->input->post('roles')
+			];
+		} else {
+			$data = [
+				'name' => $this->input->post('name'),
+				'email' => $this->input->post('email'),
+				'password' => password_hash($this->input->post('password'), PASSWORD_DEFAULT),
+				'address' => $this->input->post('address'),
+				'phone_number' => $this->input->post('phone_number'),
+				'postal_code' => $this->input->post('postal_code'),
+				'roles' => $this->input->post('roles')
+			];
+		}
+
+
+
+		$update = $this->user_model->update($id, $data);
+		if ($update == true) {
+			$response = [
+				'status' => 200
+			];
+			echo json_encode($response);
+		} else {
+			$response = [
+				'status' => 404
+			];
+			echo json_encode($response);
+		}
+	}
 }
 
 
