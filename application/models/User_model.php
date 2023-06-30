@@ -30,8 +30,6 @@ class User_model extends CI_Model
 	function insert($data)
 	{
 		$insert = $this->db->insert('users', $data);
-
-
 		if ($insert) {
 			return true;
 		} else {
@@ -49,6 +47,14 @@ class User_model extends CI_Model
 		} else {
 			return false;
 		}
+	}
+
+	function getAllUsers()
+	{
+
+		$this->db->select('*');
+		$this->db->from('users');
+		return $this->db->get()->result();
 	}
 }
 

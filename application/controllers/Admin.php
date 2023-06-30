@@ -210,6 +210,60 @@ class Admin extends CI_Controller
 			echo json_encode($response);
 		}
 	}
+
+	function getAllUsers()
+	{
+		echo json_encode($this->user_model->getAllUsers());
+	}
+
+
+	function insertRekening()
+	{
+
+		$data = [
+			'bank_name' => $this->input->post('bank_name'),
+			'number' => $this->input->post('number'),
+			'rekening_name' => $this->input->post('rekening_name')
+		];
+		$insert = $this->rekening_model->insert($data);
+		if ($insert == true) {
+			$response = [
+				'status' => 200
+			];
+			echo json_encode($response);
+		} else {
+			$response = [
+				'status' => 404
+			];
+			echo json_encode($response);
+		}
+	}
+
+	function insertUsers()
+	{
+
+		$data = [
+			'name' => $this->input->post('name'),
+			'email' => $this->input->post('email'),
+			'password' => password_hash($this->input->post('password'), PASSWORD_DEFAULT),
+			'address' => $this->input->post('address'),
+			'phone_number' => $this->input->post('phone_number'),
+			'postal_code' => $this->input->post('postal_code'),
+			'roles' => $this->input->post('roles')
+		];
+		$insert = $this->user_model->insert($data);
+		if ($insert == true) {
+			$response = [
+				'status' => 200
+			];
+			echo json_encode($response);
+		} else {
+			$response = [
+				'status' => 404
+			];
+			echo json_encode($response);
+		}
+	}
 }
 
 
