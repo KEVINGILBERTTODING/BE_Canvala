@@ -52,6 +52,22 @@ class Product_model extends CI_Model
 		$this->db->where('category_id', $id);
 		return $this->db->get()->result();
 	}
+
+	function deleteProduct($id)
+	{
+
+		$this->db->trans_start();
+		$this->db->where('id_product', $id);
+		$this->db->delete('products');
+		$this->db->where('product_id', $id);
+		$this->db->delete('products_galleries');
+		$this->db->trans_complete();
+		if ($this->db->trans_status() == true) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }
 
 /* End of file Product_model.php */
