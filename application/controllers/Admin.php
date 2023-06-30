@@ -16,6 +16,7 @@ class Admin extends CI_Controller
 		$this->load->model('rekening_model');
 		$this->load->model('transaction_detail_model');
 		$this->load->model('transaction_model');
+		$this->load->model('categories_model');
 	}
 
 	function getAllTransactionsByStatus()
@@ -120,6 +121,94 @@ class Admin extends CI_Controller
 		$this->pdflib->setPaper('A4', 'potrait');
 		$data['transactions'] = $this->transaction_model->filterTrans($dateStart, $dateEnd);
 		$this->pdflib->loadView('v_report', $data);
+	}
+
+	function getCategories()
+	{
+		echo json_encode($this->categories_model->getCategories());
+	}
+
+	function deleteCategories()
+	{
+		$id = $this->input->post('id');
+		$delete = $this->categories_model->delete($id);
+		if ($delete == true) {
+			$response = [
+				'status' => 200
+			];
+			echo json_encode($response);
+		} else {
+			$response = [
+				'status' => 404
+			];
+			echo json_encode($response);
+		}
+	}
+
+	function insertCategories()
+	{
+		$data = [
+			'category_name' => $this->input->post('category_name'),
+			'slug' => $this->input->post('category_name'),
+		];
+
+		$insert = $this->categories_model->insert($data);
+		if ($insert == true) {
+			$response = [
+				'status' => 200
+			];
+			echo json_encode($response);
+		} else {
+			$response = [
+				'status' => 404
+			];
+			echo json_encode($response);
+		}
+	}
+
+	function getAllRekening()
+	{
+		echo json_encode($this->rekening_model->getAllRekening());
+	}
+
+
+	function deleteRekening()
+	{
+		$id = $this->input->post('id');
+		$delete = $this->rekening_model->delete($id);
+		if ($delete == true) {
+			$response = [
+				'status' => 200
+			];
+			echo json_encode($response);
+		} else {
+			$response = [
+				'status' => 404
+			];
+			echo json_encode($response);
+		}
+	}
+
+	function updateRekening()
+	{
+		$id = $this->input->post('id');
+		$data = [
+			'bank_name' => $this->input->post('bank_name'),
+			'number' => $this->input->post('number'),
+			'rekening_name' => $this->input->post('rekening_name')
+		];
+		$update = $this->rekening_model->update($id, $data);
+		if ($update == true) {
+			$response = [
+				'status' => 200
+			];
+			echo json_encode($response);
+		} else {
+			$response = [
+				'status' => 404
+			];
+			echo json_encode($response);
+		}
 	}
 }
 
