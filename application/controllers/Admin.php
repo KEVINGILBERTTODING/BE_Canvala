@@ -414,6 +414,112 @@ class Admin extends CI_Controller
 			echo json_encode($response);
 		}
 	}
+
+
+	function updateProduct()
+	{
+
+		$status = $this->input->post('status');
+		$productId = $this->input->post('product_id');
+		if ($status == 'true') {
+			$config['upload_path']          = './uploads/';
+			$config['allowed_types']        = 'jpg|png|jpeg';
+			$config['max_size']             = 5000;
+
+
+			$this->load->library('upload', $config);
+			if (!$this->upload->do_upload('foto')) {
+				$response = [
+					'status' => 404,
+					'message' => $this->upload->display_errors()
+				];
+				echo json_encode($response);
+			} else {
+
+				$data = array('upload_data' => $this->upload->data());
+
+				$file_name = $data['upload_data']['file_name'];
+				$source_path = './uploads/' . $data['upload_data']['file_name'];
+				$dir_path = $_SERVER['DOCUMENT_ROOT'] . '/ortosec/assets/images/';
+				if (!is_dir($dir_path)) {
+					mkdir($dir_path, 0777, true);
+				}
+
+				$destination_path = $dir_path . $file_name;
+
+				if (file_exists($source_path)) {
+					if (copy($source_path, $destination_path)) {
+					} else {
+						$response = [
+							'status' => 404,
+							'message' => 'Terjadi kesalahan'
+						];
+						echo json_encode($response);
+					}
+				}
+			}
+
+			$dataProduct = [
+				'product_name' => $this->input->post('product_name'),
+				'price' => $this->input->post('price'),
+				'descriptions' => $this->input->post('description'),
+				'category_id' => $this->input->post('category_id'),
+				'stock' => $this->input->post('stock'),
+			];
+
+			$dataGallery = [
+				'product_id' => $productId,
+				'photos' => $file_name
+			];
+
+
+
+			$update = $this->product_model->updateProduct('true', $productId, $dataProduct, $dataGallery);
+			if ($update == true) {
+				$response = [
+					'status' => 200
+				];
+				echo json_encode($response);
+			} else {
+				$response = [
+					'status' => 404,
+					'message' => 'Terjadi kesalahan'
+				];
+				echo json_encode($response);
+			}
+		} else {
+			$dataProduct = [
+				'product_name' => $this->input->post('product_name'),
+				'price' => $this->input->post('price'),
+				'descriptions' => $this->input->post('description'),
+				'category_id' => $this->input->post('category_id'),
+				'stock' => $this->input->post('stock'),
+			];
+			$dataGallery = [
+				'product_id' => $productId,
+				'photos' => ''
+			];
+
+			$update = $this->product_model->updateProduct('false', $productId, $dataProduct, $dataGallery);
+			if ($update == true) {
+				$response = [
+					'status' => 200
+				];
+				echo json_encode($response);
+			} else {
+				$response = [
+					'status' => 404
+				];
+				echo json_encode($response);
+			}
+		}
+	}
+
+	function getProductById()
+	{
+		$id = $this->input->get('id');
+		echo json_encode($this->product_model->getProductById($id));
+	}
 }
 
 
