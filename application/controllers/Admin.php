@@ -333,10 +333,10 @@ class Admin extends CI_Controller
 
 
 		$this->load->library('upload', $config);
-		if (!$this->upload->do_upload('bukti')) {
+		if (!$this->upload->do_upload('foto')) {
 			$response = [
-				'code' => 404,
-				'message' => 'Format file tidak sesuai'
+				'status' => 404,
+				'message' => $this->upload->display_errors()
 			];
 			echo json_encode($response);
 		} else {
@@ -357,7 +357,7 @@ class Admin extends CI_Controller
 				if (copy($source_path, $destination_path)) {
 				} else {
 					$response = [
-						'code' => 404,
+						'status' => 404,
 						'message' => 'Terjadi kesalahan'
 					];
 					echo json_encode($response);
@@ -365,16 +365,26 @@ class Admin extends CI_Controller
 			}
 		}
 
-		$userId = $this->input->post('id_transactions');
+		$productId = $this->product_model->getMaxId();
 
-		$data = [
-			'photo_transaction' => $file_name
+		$dataProduct = [
+			'product_name' => $this->input->post('product_name'),
+			'unit' => 1000,
+			'price' => $this->input->post('price'),
+			'descriptions' => $this->input->post('description'),
+			'category_id' => $this->input->post('category_id'),
+			'stock' => $this->input->post('stock'),
+		];
+
+		$dataGallery = [
+			'product_id' => $productId,
+			'photos' => $file_name
 		];
 
 
 
-		$update =  $this->transaction_model->update($userId, $data);
-		if ($update == true) {
+		$insert = $this->product_model->insertProduct($dataProduct, $dataGallery);
+		if ($insert == true) {
 			$response = [
 				'status' => 200
 			];

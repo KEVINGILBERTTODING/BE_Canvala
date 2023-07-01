@@ -68,6 +68,27 @@ class Product_model extends CI_Model
 			return false;
 		}
 	}
+
+	function getMaxId()
+	{
+		$this->db->select_max('id_product');
+		$this->db->from('products');
+		$maxId = $this->db->get()->row_array()['id_product'] + 1;
+		return $maxId;
+	}
+
+	function insertProduct($dataProduct, $dataGallery)
+	{
+		$this->db->trans_start();
+		$this->db->insert('products', $dataProduct);
+		$this->db->insert('products_galleries', $dataGallery);
+		$this->db->trans_complete();
+		if ($this->db->trans_status() == true) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 }
 
 /* End of file Product_model.php */
